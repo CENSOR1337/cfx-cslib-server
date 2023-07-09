@@ -2,6 +2,7 @@ import { Vector3 } from "@fivemjs/shared";
 import { Event } from "../event";
 
 export class Player {
+	public readonly type = "player";
 	public static readonly type = "player";
 	public readonly source: number;
 
