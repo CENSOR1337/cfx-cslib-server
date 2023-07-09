@@ -2,6 +2,8 @@ import { Player } from "./objects/Player";
 import { CFXEventData, Cfx } from "@fivemjs/shared";
 import { Event as EventShared } from "@fivemjs/shared";
 
+export type clientListener = (player: Player, ...args: any[]) => void;
+
 export class Event extends EventShared {
 	public static emitClient(eventName: string, target: number | string | Player, ...args: any[]): void {
 		if (target instanceof Player) {
@@ -14,7 +16,7 @@ export class Event extends EventShared {
 		return Event.emitClient(eventName, -1, ...args);
 	}
 
-	public static onClient(eventName: string, listener: (player: Player, ...args: any[]) => void): CFXEventData {
+	public static onClient(eventName: string, listener: clientListener): CFXEventData {
 		const handler = (...args: any[]) => {
 			const src = source;
 			const player = Player.fromSource(src);
@@ -22,12 +24,12 @@ export class Event extends EventShared {
 		};
 		Cfx.addNetEventListener(eventName, handler);
 		const eventData = { eventName, listener: handler };
-        return eventData;
+		return eventData;
 	}
 
-	public static onceClient(eventName: string, listener: (player: Player, ...args: any[]) => void): CFXEventData {
+	public static onceClient(eventName: string, listener: clientListener): CFXEventData {
 		const eventData = this.onClient(eventName, (player: Player, ...args: any[]) => {
-            listener(player, ...args);
+			listener(player, ...args);
 			this.off(eventData);
 		});
 		return eventData;
