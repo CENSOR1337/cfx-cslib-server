@@ -21,15 +21,13 @@ export class Event extends EventShared {
 			listener(player, ...args);
 		};
 		Cfx.addNetEventListener(eventName, handler);
-		return {
-			eventName,
-			listener: handler,
-		} as CFXEventData;
+		const eventData = { eventName, listener: handler };
+        return eventData;
 	}
 
 	public static onceClient(eventName: string, listener: (player: Player, ...args: any[]) => void): CFXEventData {
-		const eventData = onClient(eventName, (player: Player, ...args: any[]) => {
-			listener(player, ...args);
+		const eventData = this.onClient(eventName, (player: Player, ...args: any[]) => {
+            listener(player, ...args);
 			this.off(eventData);
 		});
 		return eventData;
