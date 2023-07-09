@@ -1,5 +1,5 @@
 export * from "@fivemjs/shared";
-export * from "./event";
 export * from "./uuid";
+export { Event, onClient, onceClient, emitClient, emitAllClients } from "./event";
 export { Collision, CollisionSphere } from "./collision";
 export { Resource } from "./resource";
