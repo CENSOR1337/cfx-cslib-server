@@ -28,9 +28,9 @@ export class Event extends EventShared {
 	}
 
 	public static onceClient(eventName: string, listener: clientListener): CFXEventData {
-		const eventData = this.onClient(eventName, (player: Player, ...args: any[]) => {
+		const eventData = Event.onClient(eventName, (player: Player, ...args: any[]) => {
 			listener(player, ...args);
-			this.off(eventData);
+			Event.off(eventData);
 		});
 		return eventData;
 	}
