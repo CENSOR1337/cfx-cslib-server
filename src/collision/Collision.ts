@@ -1,16 +1,7 @@
 import { randomUUID } from "../uuid";
 import { Vector3 } from "@fivemjs/shared";
 import { Collision as CollisionBase } from "@fivemjs/shared";
-
-function GetPlayers() {
-	const players = new Array<number>();
-	const num = GetNumPlayerIndices();
-	for (let i = 0; i < num; i++) {
-		const playerId = parseInt(GetPlayerFromIndex(i));
-		players.push(playerId);
-	}
-	return players;
-}
+import { Player } from "../objects";
 
 export class Collision extends CollisionBase {
 	readonly id = randomUUID();
@@ -26,10 +17,10 @@ export class Collision extends CollisionBase {
 	}
 	protected getRevelantEntities(): Array<number> {
 		const entities = new Array<number>();
-		const players = GetPlayers();
+		const players = Player.all;
 
 		for (const player of players) {
-			const ped = GetPlayerPed(player);
+			const ped = player.ped;
 			entities.push(ped);
 		}
 

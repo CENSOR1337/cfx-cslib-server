@@ -6,13 +6,24 @@ export class Player {
 	public static readonly type = "player";
 	public readonly source: number;
 
+	public static get all(): Player[] {
+		const players = new Array<Player>();
+		const num = GetNumPlayerIndices();
+		for (let i = 0; i < num; i++) {
+			const playerId = GetPlayerFromIndex(i);
+			const player = Player.fromSource(playerId);
+			players.push(player);
+		}
+		return players;
+	}
+
 	private constructor(src: number | string) {
 		this.source = Number(src);
 	}
 
-    public static fromSource(src: number | string): Player {
-        return new Player(src);
-    }
+	public static fromSource(src: number | string): Player {
+		return new Player(src);
+	}
 
 	private get sourceStr(): string {
 		return String(this.source);
