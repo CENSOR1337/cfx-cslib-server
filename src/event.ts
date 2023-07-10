@@ -1,5 +1,5 @@
 import { Player } from "./objects/Player";
-import { CFXEventData, Cfx } from "@fivemjs/shared";
+import { CFXEventData, Citizen } from "@fivemjs/shared";
 import { Event as EventShared } from "@fivemjs/shared";
 import { listenerType } from "@fivemjs/shared";
 
@@ -23,7 +23,7 @@ export class Event extends EventShared {
 		if (target instanceof Player) {
 			target = target.src;
 		}
-		Cfx.triggerClientEvent(eventName, target, ...args);
+		Citizen.triggerClientEvent(eventName, target, ...args);
 	}
 
 	public static emitAllClients(eventName: string, ...args: any[]): void {
@@ -36,7 +36,7 @@ export class Event extends EventShared {
 			const player = Player.fromSource(src);
 			listener(player, ...args);
 		};
-		Cfx.addNetEventListener(eventName, handler);
+		Citizen.addNetEventListener(eventName, handler);
 		const eventData = { eventName, listener: handler };
 		return eventData;
 	}
@@ -60,7 +60,7 @@ export class Event extends EventShared {
 		const handler = (...args: any[]) => {
 			listener(...Event.getClassFromArguments(...args));
 		};
-        return super.once(eventName, handler);
+		return super.once(eventName, handler);
 	}
 }
 
