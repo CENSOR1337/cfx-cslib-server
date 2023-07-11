@@ -11,8 +11,8 @@ export class VirtualEntity extends SharedVirtualEntity {
 	readonly syncedMeta: Record<string, any>;
 	_dimension: number = 0;
 
-	constructor(position: Vector3, streamingDistance: number, data?: Record<string, any>) {
-		super(position);
+	constructor(VirtualEntityType: string, position: Vector3, streamingDistance: number, data?: Record<string, any>) {
+		super(VirtualEntityType, position);
 		const collision = new CollisionSphere(position, streamingDistance);
 		collision.playersOnly = true;
 		collision.onBeginOverlap(this.onEnterStreamingRange.bind(this));
@@ -21,6 +21,10 @@ export class VirtualEntity extends SharedVirtualEntity {
 
 		this.syncedMeta = data || {};
 	}
+
+    public destroy() {
+        this.collision.destroy();
+    }
 
 	public get dimension(): number {
 		return this._dimension;
@@ -34,7 +38,7 @@ export class VirtualEntity extends SharedVirtualEntity {
 	public setSyncedMeta(key: string, value: any) {
 		this.syncedMeta[key] = value;
 		for (const src of this.streamingPlayers) {
-            Resource.emitClient(VirtualEntity.Event.onVirtualEntitySyncedMetaChange, src, this.id, key, value);
+			Resource.emitClient(this.event.onVirtualEntitySyncedMetaChange, src, this.id, key, value);
 		}
 	}
 
@@ -50,13 +54,13 @@ export class VirtualEntity extends SharedVirtualEntity {
 		const src = NetworkGetEntityOwner(entity);
 		this.streamingPlayers.add(src);
 		const data = this.getSyncData();
-        Resource.emitClient(VirtualEntity.Event.onVirtualEntityStreamIn, src, data);
+		Resource.emitClient(this.event.onVirtualEntityStreamIn, src, data);
 	}
 
 	private onLeaveStreamingRange(entity: number) {
 		const src = NetworkGetEntityOwner(entity);
 		this.streamingPlayers.delete(src);
 		const data = this.getSyncData();
-		Resource.emitClient(VirtualEntity.Event.onVirtualEntityStreamOut, src, data);
+		Resource.emitClient(this.event.onVirtualEntityStreamOut, src, data);
 	}
 }
