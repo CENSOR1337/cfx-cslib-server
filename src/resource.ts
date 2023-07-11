@@ -15,7 +15,15 @@ class ResourceCallback extends Callback {
 }
 
 export class Resource extends sharedResource {
-    public static readonly Callback = ResourceCallback;
+	public static readonly Callback = ResourceCallback;
+
+	public static on(eventName: string, handler: (...args: any[]) => void): CFXEventData {
+		return Event.on(this.getEventName(eventName), handler);
+	}
+
+	public static once(eventName: string, handler: (...args: any[]) => void): CFXEventData {
+		return Event.once(this.getEventName(eventName), handler);
+	}
 
 	public static emitAllClients(eventName: string, ...args: any[]): void {
 		return Event.emitAllClients(this.getEventName(eventName), ...args);
