@@ -1,8 +1,22 @@
 import { Resource as sharedResource } from "@fivemjs/shared";
 import { Event } from "./event";
 import { CFXEventData } from "@fivemjs/shared";
+import { Callback } from "./callback";
+import { Player } from "./objects/Player";
+
+class ResourceCallback extends Callback {
+	public static register(eventName: string, handler: (player: Player, ...args: any[]) => void): CFXEventData {
+		return super.register(Resource.getEventName(eventName), handler);
+	}
+
+	public static emit<T>(eventName: string, player: Player, ...args: any[]): Promise<T> {
+		return super.emit(Resource.getEventName(eventName), player, ...args);
+	}
+}
 
 export class Resource extends sharedResource {
+    public static readonly Callback = ResourceCallback;
+
 	public static emitAllClients(eventName: string, ...args: any[]): void {
 		return Event.emitAllClients(this.getEventName(eventName), ...args);
 	}
