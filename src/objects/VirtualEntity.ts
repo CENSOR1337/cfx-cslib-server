@@ -11,8 +11,8 @@ export class VirtualEntity extends SharedVirtualEntity {
 	readonly syncedMeta: Record<string, any>;
 	_dimension: number = 0;
 
-	constructor(VirtualEntityType: string, position: Vector3, streamingDistance: number, data?: Record<string, any>) {
-		super(VirtualEntityType, position);
+	constructor(position: Vector3, streamingDistance: number, data?: Record<string, any>) {
+        super(position);
 		const collision = new CollisionSphere(position, streamingDistance);
 		collision.playersOnly = true;
 		collision.onBeginOverlap(this.onEnterStreamingRange.bind(this));
