@@ -1,10 +1,10 @@
 import { Vector3 } from "@fivemjs/shared";
 import { VirtualEntity as SharedVirtualEntity } from "@fivemjs/shared";
-import { CollisionSphere } from "../collision/CollisionSphere";
-import { randomUUID } from "../uuid";
-import { Resource } from "../resource";
+import { CollisionSphere } from "./CollisionSphere";
+import { randomUUID } from "./utils/uuid";
+import { Resource } from "./Resource";
 import { Player } from "./Player";
-import { Event } from "../event";
+import { Events } from "./Events";
 
 export class VirtualEntity extends SharedVirtualEntity {
 	readonly id = randomUUID();
@@ -22,7 +22,7 @@ export class VirtualEntity extends SharedVirtualEntity {
 		this.collision = collision;
 
 		this.syncedMeta = data || {};
-		Event.ServerEvent.onPlayerDropped(this.onPlayerDisconnected.bind(this));
+		Events.ServerEvent.onPlayerDropped(this.onPlayerDisconnected.bind(this));
 	}
 
 	public destroy() {
