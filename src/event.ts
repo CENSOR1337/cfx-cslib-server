@@ -5,6 +5,14 @@ import { listenerType } from "@fivemjs/shared";
 
 export type clientListener = (player: Player, ...args: any[]) => void;
 
+class ServerEvent extends EventShared {
+	public static onPlayerDropped(listener: (player: Player, reason: string) => void): CFXEventData {
+		return Event.on("playerDropped", (reason: string) => {
+			const player = Player.fromSource(source);
+			listener(player, reason);
+		});
+	}
+}
 export class Event extends EventShared {
 	protected static getObjectClass(obj: any): any {
 		const objType = obj.type;
@@ -62,6 +70,8 @@ export class Event extends EventShared {
 		};
 		return super.once(eventName, handler);
 	}
+
+	public static ServerEvent = ServerEvent;
 }
 
 export const on = Event.on;
