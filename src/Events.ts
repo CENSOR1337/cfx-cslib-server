@@ -1,4 +1,4 @@
-import { Player } from "./objects/Player";
+import { Player } from "./Player";
 import { CFXEventData, Citizen } from "@fivemjs/shared";
 import { Event as EventShared } from "@fivemjs/shared";
 import { listenerType } from "@fivemjs/shared";
@@ -7,13 +7,13 @@ export type clientListener = (player: Player, ...args: any[]) => void;
 
 class ServerEvent extends EventShared {
 	public static onPlayerDropped(listener: (player: Player, reason: string) => void): CFXEventData {
-		return Event.on("playerDropped", (reason: string) => {
+		return Events.on("playerDropped", (reason: string) => {
 			const player = Player.fromSource(source);
 			listener(player, reason);
 		});
 	}
 }
-export class Event extends EventShared {
+export class Events extends EventShared {
 	protected static getObjectClass(obj: any): any {
 		const objType = obj.type;
 		if (!objType) return obj;
@@ -35,7 +35,7 @@ export class Event extends EventShared {
 	}
 
 	public static emitAllClients(eventName: string, ...args: any[]): void {
-		return Event.emitClient(eventName, -1, ...args);
+		return Events.emitClient(eventName, -1, ...args);
 	}
 
 	public static onClient(eventName: string, listener: clientListener): CFXEventData {
@@ -50,23 +50,23 @@ export class Event extends EventShared {
 	}
 
 	public static onceClient(eventName: string, listener: clientListener): CFXEventData {
-		const eventData = Event.onClient(eventName, (player: Player, ...args: any[]) => {
+		const eventData = Events.onClient(eventName, (player: Player, ...args: any[]) => {
 			listener(player, ...args);
-			Event.off(eventData);
+			Events.off(eventData);
 		});
 		return eventData;
 	}
 
 	public static on(eventName: string, listener: listenerType): CFXEventData {
 		const handler = (...args: any[]) => {
-			listener(...Event.getClassFromArguments(...args));
+			listener(...Events.getClassFromArguments(...args));
 		};
 		return super.on(eventName, handler);
 	}
 
 	public static once(eventName: string, listener: listenerType): CFXEventData {
 		const handler = (...args: any[]) => {
-			listener(...Event.getClassFromArguments(...args));
+			listener(...Events.getClassFromArguments(...args));
 		};
 		return super.once(eventName, handler);
 	}
@@ -74,9 +74,9 @@ export class Event extends EventShared {
 	public static ServerEvent = ServerEvent;
 }
 
-export const on = Event.on;
-export const once = Event.once;
-export const emitClient = Event.emitClient;
-export const emitAllClients = Event.emitAllClients;
-export const onClient = Event.onClient;
-export const onceClient = Event.onceClient;
+export const on = Events.on;
+export const once = Events.once;
+export const emitClient = Events.emitClient;
+export const emitAllClients = Events.emitAllClients;
+export const onClient = Events.onClient;
+export const onceClient = Events.onceClient;

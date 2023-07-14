@@ -1,8 +1,8 @@
 import { Resource as sharedResource } from "@fivemjs/shared";
-import { Event } from "./event";
+import { Events } from "./Events";
 import { CFXEventData } from "@fivemjs/shared";
-import { Callback } from "./callback";
-import { Player } from "./objects/Player";
+import { Callback } from "./Callback";
+import { Player } from "./Player";
 
 class ResourceCallback extends Callback {
 	public static register(eventName: string, handler: (player: Player, ...args: any[]) => void): CFXEventData {
@@ -18,26 +18,26 @@ export class Resource extends sharedResource {
 	public static readonly Callback = ResourceCallback;
 
 	public static on(eventName: string, handler: (...args: any[]) => void): CFXEventData {
-		return Event.on(this.getEventName(eventName), handler);
+		return Events.on(this.getEventName(eventName), handler);
 	}
 
 	public static once(eventName: string, handler: (...args: any[]) => void): CFXEventData {
-		return Event.once(this.getEventName(eventName), handler);
+		return Events.once(this.getEventName(eventName), handler);
 	}
 
 	public static emitAllClients(eventName: string, ...args: any[]): void {
-		return Event.emitAllClients(this.getEventName(eventName), ...args);
+		return Events.emitAllClients(this.getEventName(eventName), ...args);
 	}
 
 	public static emitClient(eventName: string, target: number, ...args: any[]): void {
-		return Event.emitClient(this.getEventName(eventName), target, ...args);
+		return Events.emitClient(this.getEventName(eventName), target, ...args);
 	}
 
 	public static onClient(eventName: string, handler: (...args: any[]) => void): CFXEventData {
-		return Event.onClient(this.getEventName(eventName), handler);
+		return Events.onClient(this.getEventName(eventName), handler);
 	}
 
 	public static onceClient(eventName: string, handler: (...args: any[]) => void): CFXEventData {
-		return Event.onceClient(this.getEventName(eventName), handler);
+		return Events.onceClient(this.getEventName(eventName), handler);
 	}
 }

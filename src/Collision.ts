@@ -1,7 +1,7 @@
-import { randomUUID } from "../uuid";
+import { randomUUID } from "./utils/uuid";
 import { Vector3 } from "@fivemjs/shared";
 import { Collision as CollisionBase } from "@fivemjs/shared";
-import { Player } from "../objects";
+import { Player } from "./Player";
 
 export class Collision extends CollisionBase {
 	constructor(pos: Vector3) {

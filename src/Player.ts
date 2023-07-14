@@ -1,5 +1,5 @@
 import { Vector3 } from "@fivemjs/shared";
-import { Event } from "../event";
+import { Events } from "./Events";
 
 export class Player {
 	public readonly type = "player";
@@ -78,6 +78,6 @@ export class Player {
 	}
 
 	public emit(eventName: string, ...args: any[]): void {
-		Event.emitClient(eventName, this.source, ...args);
+		Events.emitClient(eventName, this.source, ...args);
 	}
 }
