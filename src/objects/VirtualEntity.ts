@@ -3,6 +3,8 @@ import { VirtualEntity as SharedVirtualEntity } from "@fivemjs/shared";
 import { CollisionSphere } from "../collision/CollisionSphere";
 import { randomUUID } from "../uuid";
 import { Resource } from "../resource";
+import { Player } from "./Player";
+import { Event } from "../event";
 
 export class VirtualEntity extends SharedVirtualEntity {
 	readonly id = randomUUID();
@@ -12,7 +14,7 @@ export class VirtualEntity extends SharedVirtualEntity {
 	_dimension: number = 0;
 
 	constructor(position: Vector3, streamingDistance: number, data?: Record<string, any>) {
-        super(position);
+		super(position);
 		const collision = new CollisionSphere(position, streamingDistance);
 		collision.playersOnly = true;
 		collision.onBeginOverlap(this.onEnterStreamingRange.bind(this));
@@ -20,11 +22,12 @@ export class VirtualEntity extends SharedVirtualEntity {
 		this.collision = collision;
 
 		this.syncedMeta = data || {};
+		Event.ServerEvent.onPlayerDropped(this.onPlayerDisconnected.bind(this));
 	}
 
-    public destroy() {
-        this.collision.destroy();
-    }
+	public destroy() {
+		this.collision.destroy();
+	}
 
 	public get dimension(): number {
 		return this._dimension;
@@ -58,9 +61,15 @@ export class VirtualEntity extends SharedVirtualEntity {
 	}
 
 	private onLeaveStreamingRange(entity: number) {
+		if (!DoesEntityExist(entity)) return;
 		const src = NetworkGetEntityOwner(entity);
 		this.streamingPlayers.delete(src);
 		const data = this.getSyncData();
 		Resource.emitClient(this.event.onVirtualEntityStreamOut, src, data);
+	}
+
+	private onPlayerDisconnected(player: Player, reason: string) {
+		if (!this.streamingPlayers.has(player.source)) return;
+		this.streamingPlayers.delete(player.source);
 	}
 }
