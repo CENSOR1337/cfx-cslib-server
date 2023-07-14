@@ -1,6 +1,6 @@
 import { Player } from "./Player";
 import { CFXEventData, Citizen } from "@fivemjs/shared";
-import { Event as EventShared } from "@fivemjs/shared";
+import { Events as EventShared } from "@fivemjs/shared";
 import { listenerType } from "@fivemjs/shared";
 
 export type clientListener = (player: Player, ...args: any[]) => void;
