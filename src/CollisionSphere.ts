@@ -1,5 +1,5 @@
 import { Collision } from "./Collision";
-import { Vector3 } from "@fivemjs/shared";
+import { Vector3 } from "@cfx/server";
 
 export class CollisionSphere extends Collision {
 	radius: number;
@@ -8,12 +8,12 @@ export class CollisionSphere extends Collision {
 		this.radius = radius;
 	}
 
-	protected isPosInside(pos: Vector3) {
+	protected isPositionInside(pos: Vector3) {
 		return this.pos.distance(pos) <= this.radius;
 	}
 
 	protected isEntityInside(entity: number) {
 		const position = Vector3.fromArray(GetEntityCoords(entity));
-		return this.isPosInside(position);
+		return this.isPositionInside(position);
 	}
 }

@@ -8,7 +8,6 @@
         ],
         "types": [
             "@types/node",
-            "@citizenfx/server",
         ],
         "declaration": true,
         "outDir": "./dist",

@@ -1,19 +1,21 @@
 import { randomUUID } from "./utils/uuid";
-import { Vector3 } from "@fivemjs/shared";
-import { Collision as CollisionBase } from "@fivemjs/shared";
+import { Vector3 } from "@cfx/server";
+import { Collision as CollisionBase } from "@cfx-cslib/shared";
 import { Player } from "./Player";
-
-export class Collision extends CollisionBase {
+import * as cfx from "@cfx/server";
+export abstract class Collision extends CollisionBase {
 	constructor(pos: Vector3) {
 		const id = randomUUID();
 		super(id, pos);
 	}
 
 	protected isEntityValid(entity: number) {
-		if (!super.isEntityValid(entity)) return false;
+		if (!cfx.doesEntityExist(entity)) return false;
+		if (!this.isEntityInside(entity)) return false;
 		if (GetEntityRoutingBucket(entity) != this.dimension) return false;
 		return true;
 	}
+
 	protected getRevelantEntities(): Array<number> {
 		const entities = new Array<number>();
 		const players = Player.all;
@@ -39,4 +41,7 @@ export class Collision extends CollisionBase {
 
 		return entities;
 	}
+
+	protected abstract isPositionInside(pos: Vector3): boolean;
+	protected abstract isEntityInside(entity: number): boolean;
 }
