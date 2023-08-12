@@ -1,10 +1,11 @@
-import { Vector3 } from "@fivemjs/shared";
-import { VirtualEntity as SharedVirtualEntity } from "@fivemjs/shared";
+import { Vector3, EventContext } from "@cfx/server";
+import { VirtualEntity as SharedVirtualEntity } from "@cfx-cslib/shared";
 import { CollisionSphere } from "./CollisionSphere";
 import { randomUUID } from "./utils/uuid";
 import { Resource } from "./Resource";
 import { Player } from "./Player";
-import { Events } from "./Events";
+import { Event } from "@cfx/server";
+import * as cfx from "@cfx/server";
 
 export class VirtualEntity extends SharedVirtualEntity {
 	readonly id = randomUUID();
@@ -22,7 +23,8 @@ export class VirtualEntity extends SharedVirtualEntity {
 		this.collision = collision;
 
 		this.syncedMeta = data || {};
-		Events.ServerEvent.onPlayerDropped(this.onPlayerDisconnected.bind(this));
+		//Events.onPlayerDropped(this.onPlayerDisconnected.bind(this));
+		Event.onPlayerDropped(this.onPlayerDisconnected.bind(this));
 	}
 
 	public destroy() {
@@ -61,15 +63,15 @@ export class VirtualEntity extends SharedVirtualEntity {
 	}
 
 	private onLeaveStreamingRange(entity: number) {
-		if (!DoesEntityExist(entity)) return;
+		if (!cfx.doesEntityExist(entity)) return;
 		const src = NetworkGetEntityOwner(entity);
 		this.streamingPlayers.delete(src);
 		const data = this.getSyncData();
 		Resource.emitClient(this.event.onVirtualEntityStreamOut, src, data);
 	}
 
-	private onPlayerDisconnected(player: Player, reason: string) {
-		if (!this.streamingPlayers.has(player.source)) return;
-		this.streamingPlayers.delete(player.source);
+	private onPlayerDisconnected({ source, reason }: EventContext["onPlayerDropped"]) {
+		if (!this.streamingPlayers.has(source)) return;
+		this.streamingPlayers.delete(source);
 	}
 }

@@ -1,14 +1,13 @@
 import { Player } from "./Player";
 import { randomUUID } from "./utils/uuid";
-import { Events } from "./Events";
-import { Callback as CallbackShared } from "@fivemjs/shared";
-import { CFXEventData } from "@fivemjs/shared";
+import { Event } from "@cfx/server";
+import { Callback as CallbackShared } from "@cfx-cslib/shared";
 
 export class Callback extends CallbackShared {
 	public static emit<T>(eventName: string, player: Player, ...args: any[]): Promise<T> {
 		const cbId = randomUUID();
 		const promise = new Promise<T>((resolve, reject) => {
-			Events.onceClient(cbId, (player: Player, data: any) => {
+			Event.onceClient(cbId, (source: number, data: any) => {
 				resolve(data as T);
 			});
 		});
@@ -16,8 +15,9 @@ export class Callback extends CallbackShared {
 		return promise;
 	}
 
-	public static register(eventName: string, handler: (player: Player, ...args: any[]) => void) : CFXEventData {
-		return Events.onClient(`${this.serverNamespace}:${eventName}`, (player: Player, cbId: string, ...args: any[]) => {
+	public static register(eventName: string, handler: (player: Player, ...args: any[]) => void): Event {
+		return Event.onClient(`${this.serverNamespace}:${eventName}`, (source: number, cbId: string, ...args: any[]) => {
+			const player = Player.fromSource(source);
 			player.emit(cbId, handler(player, ...args));
 		});
 	}

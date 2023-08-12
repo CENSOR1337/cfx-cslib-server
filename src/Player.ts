@@ -1,5 +1,4 @@
-import { Vector3 } from "@fivemjs/shared";
-import { Events } from "./Events";
+import { Vector3, Event } from "@cfx/server";
 
 export class Player {
 	public readonly type = "player";
@@ -78,6 +77,6 @@ export class Player {
 	}
 
 	public emit(eventName: string, ...args: any[]): void {
-		Events.emitClient(eventName, this.source, ...args);
+		Event.emitClient(eventName, this.source, ...args);
 	}
 }
